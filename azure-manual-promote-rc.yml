@@ -17,6 +17,11 @@ variables:
 steps:
   - script: java --version
     displayName: Report Java Version installed
+    
+  - script: ls -la ${Build.SourcsDirectory}
+  - script: ls -la ${Build.ArtifactStagingDirectory}
+  - script: ls -la ${Build.BinariesDirectory}
+
   - script: |
       echo ${{ variables.wrapper_version }} # outputs initialValue
       echo $(wrapper_version)
