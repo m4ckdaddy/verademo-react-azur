@@ -41,6 +41,10 @@ steps:
     
   - script: ls -la
     displayName: Show Contents
+      
+  - script: ls -la $(Build.SourcesDirectory)
+  - script: ls -la $(Build.ArtifactStagingDirectory)
+  - script: ls -la $(Build.BinariesDirectory)
   - task: ExtractFiles@1
     inputs:
       archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/*.zip'
