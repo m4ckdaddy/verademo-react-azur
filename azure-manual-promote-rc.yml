@@ -48,6 +48,10 @@ steps:
       cleanDestinationFolder: false
       overwriteExistingFiles: false
 
+  - script: ls -la $(Build.SourcesDirectory)
+  - script: ls -la $(Build.ArtifactStagingDirectory)
+  - script: ls -la $(Build.BinariesDirectory)
+
   #- script: |
   #     java -jar VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
   #  displayName: Pulling the Sandbox ID List
