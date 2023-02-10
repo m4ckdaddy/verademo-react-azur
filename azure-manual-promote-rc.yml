@@ -32,6 +32,9 @@ steps:
   - script: | 
       curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$version/vosp-api-wrappers-java-$(wrapper_version)-dist.zip -o dist.zip
     displayName: Downloading the latest version of the Veracode Java API
+    
+  - script: ls -la
+    displayName: Show Contents
   - task: ExtractFiles@1
     inputs:
       archiveFilePatterns: '**/*.zip'
