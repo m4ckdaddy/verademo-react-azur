@@ -16,9 +16,12 @@ variables:
   value: 23.1.10.5
 steps:
   - script: java --version
+    continueOnError: true
     displayName: Report Java Version installed
   - script: gzip --version
+    continueOnError: true
   - script: 7z --version
+    continueOnError: true
     
   - script: ls -la $(Build.SourcesDirectory)
   - script: ls -la $(Build.ArtifactStagingDirectory)
