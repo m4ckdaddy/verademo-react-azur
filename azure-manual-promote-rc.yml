@@ -15,7 +15,8 @@ variables:
 - name: wrapper_version
   value: 23.1.10.5
 steps:
-  
+  - script: java --version
+    displayName: Report Java Version installed
   - script: |
       echo ${{ variables.wrapper_version }} # outputs initialValue
       echo $(wrapper_version)
