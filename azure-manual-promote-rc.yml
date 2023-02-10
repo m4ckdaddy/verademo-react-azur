@@ -7,7 +7,7 @@ pr: none
 
 variables:
 - name: one
-  value: initialValue 
+  value: $[curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | findstr /r "latest";]
 
 steps:
   - script: |
