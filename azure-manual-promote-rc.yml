@@ -1,0 +1,22 @@
+name:  'Promote Release Candidate Scan'
+
+#$(TeamProject)_$(SourceBranchName)_$(Build.BuildId)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+pr: none
+
+variables:
+- name: one
+  value: initialValue 
+
+steps:
+  - script: |
+      echo ${{ variables.one }} # outputs initialValue
+      echo $(one)
+    displayName: First variable pass
+  - bash: echo "##vso[task.setvariable variable=one]secondValue"
+    displayName: Set new variable value
+  - script: |
+      echo ${{ variables.one }} # outputs initialValue
+      echo $(one) # outputs secondValue
+    displayName: Second variable pass
