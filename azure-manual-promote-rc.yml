@@ -18,7 +18,7 @@ steps:
   - script: java --version
     displayName: Report Java Version installed
     
-  - script: ls -la $(Build.SourcsDirectory)
+  - script: ls -la $(Build.SourcesDirectory)
   - script: ls -la $(Build.ArtifactStagingDirectory)
   - script: ls -la $(Build.BinariesDirectory)
 
