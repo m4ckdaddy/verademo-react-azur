@@ -6,8 +6,8 @@ trigger: none
 pr: none
 
 variables:
-- name: appname
-  value: verademo-azure
+- name: appName
+  value: verademo-react-azure-devops
 - name: vid
   value: testid
 - name: vkey
@@ -50,7 +50,7 @@ steps:
  
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
-        $veracodeappid = (Get-Content .\appidlist.txt | Select-String $appname).Line.Split('"')[1]
+        $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
       echo $veracodeappid
     displayName: Pulling the Sandbox ID List
     enabled: true
