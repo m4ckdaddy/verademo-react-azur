@@ -46,6 +46,7 @@ steps:
       Write-Output "Downloading the latest version of the Veracode Java API"
           $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
           $wrapper_version = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
+          echo $wrapper_version
     displayName: Team
     enabled: false
     
@@ -53,15 +54,15 @@ steps:
       curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$WRAPPER_VERSION/vosp-api-wrappers-java-$WRAPPER_VERSION-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
     displayName: Downloading the latest version of the Veracode Java API
     enabled: true     
-    
+  
+  - script: ls -la
+    displayName: Show Contents
+  
   - script: |
       7z e dist.zip -y
     displayName: Uncompressiong File  
     enabled: true
     
-  - script: ls -la
-    displayName: Show Contents
-      
   - script: ls -la $(Build.SourcesDirectory)
   - script: ls -la $(Build.ArtifactStagingDirectory)
   - script: ls -la $(Build.BinariesDirectory)
