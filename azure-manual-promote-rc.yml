@@ -23,23 +23,14 @@ steps:
   - script: ls -la $(Build.BinariesDirectory)
 
   - pwsh: |
-      Write-Output "Downloading the latest version of the Veracode Java API"
-          $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
-          $wrapperversion = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
-          echo $wrapperversion
-          echo "##vso[task.setvariable variable=wrapper_version;isOutput=true]$wrapperversion"
-          echo $WRAPPER_VERSION
-    displayName: Get meta-data on the latest version of the Veracode Java API
-    enabled: true
-    
-  - script: |
-      echo $WRAPPER_VERSION;
-      echo $wrapper_version;
-      echo $[wrapper_version]
+      $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
+      $wrapperversion = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
+      echo $wrapperversion
       curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$WRAPPER_VERSION/vosp-api-wrappers-java-$WRAPPER_VERSION-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
-    displayName: Downloading the latest version of the Veracode Java API
-    enabled: true     
   
+    displayName: Downloading the latest version of the Veracode Java API
+    enabled: true
+
   - script: sleep 10
     displayName: Waiting for Download
   
@@ -47,8 +38,7 @@ steps:
     displayName: Show Artifact Directory Content
 
   - script: |
-      7z e $(Build.ArtifactStagingDirectory)/dist.zip -y 
-       #-o$(Build.ArtifactStagingDirectory)/extract/
+      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o$(Build.ArtifactStagingDirectory)/extract/ --y
     displayName: Uncompressiong File  
     enabled: true
   
