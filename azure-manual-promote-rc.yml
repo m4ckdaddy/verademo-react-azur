@@ -5,9 +5,8 @@ name:  'Promote Release Candidate Scan'
 trigger: none
 pr: none
 
-
 variables:
-- name: applicationName
+- name: appname
   value: verademo-azure
 - name: vid
   value: testid
@@ -43,17 +42,20 @@ steps:
     displayName: Show Extract Directory Content
     enabled: true
     
-  #- script: |
-  #     java -jar VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
-  #  displayName: Pulling the Sandbox ID List
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -version
     displayName: Veracode Wrapper Version
     enabled: true
     
   - script: |
+       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
+    displayName: Pulling the Sandbox ID List
+    enabled: true
+ 
+  - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
         $veracodeappid = (Get-Content .\appidlist.txt | Select-String $appname).Line.Split('"')[1]
+      echo $veracodeappid
     displayName: Pulling the Sandbox ID List
     enabled: true
   
