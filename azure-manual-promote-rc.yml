@@ -35,6 +35,9 @@ steps:
     displayName: Downloading the latest version of the Veracode Java API
     enabled: true     
   
+  - script: sleep 300
+    displayName: Waiting for Download
+  
   - script: ls -la $(Build.ArtifactStagingDirectory)
     displayName: Show Artifact Directory Content
 
@@ -42,9 +45,6 @@ steps:
       7z e $(Build.ArtifactStagingDirectory)/dist.zip -o$(Build.ArtifactStagingDirectory)/extract/ -y
     displayName: Uncompressiong File  
     enabled: true
-
-  - script: sleep 300
-    displayName: Waiting for Download
   
   - script: ls -la $(Build.ArtifactStagingDirectory)/extract/
     displayName: Show Extract Directory Content
