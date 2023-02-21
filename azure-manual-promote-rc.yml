@@ -38,7 +38,7 @@ steps:
     displayName: Show Artifact Directory Content
 
   - script: |
-      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o$(Build.ArtifactStagingDirectory)/extract/ --y
+      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o$(Build.ArtifactStagingDirectory)/extract/ -y
     displayName: Uncompressiong File  
     enabled: true
   
