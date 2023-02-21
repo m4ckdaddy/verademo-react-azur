@@ -25,7 +25,7 @@ steps:
       Write-Output "Downloading the latest version of the Veracode Java API"
           $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
           $wrapper_version = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
-          ##vso[task.setvariable variable=wrapper_version;isOutput=true] $wrapper_version;
+          ##vso[task.setvariable variable=wrapper_version;isOutput=true]$wrapper_version
     displayName: Get meta-data on the latest version of the Veracode Java API
     enabled: true
     
