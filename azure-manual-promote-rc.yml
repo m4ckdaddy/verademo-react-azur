@@ -26,7 +26,7 @@ steps:
       $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
       $wrapperversion = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
       echo $wrapperversion
-      curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$WRAPPER_VERSION/vosp-api-wrappers-java-$WRAPPER_VERSION-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
+      curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/wrapperversion/vosp-api-wrappers-java-wrapperversion-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
   
     displayName: Downloading the latest version of the Veracode Java API
     enabled: true
