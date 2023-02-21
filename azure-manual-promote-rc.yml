@@ -43,6 +43,8 @@ steps:
     displayName: Uncompressiong File  
     enabled: true
 
+  - script: sleep 30
+  
   - script: ls -la $(Build.ArtifactStagingDirectory)/extract/
     displayName: Show Extract Directory Content
     
