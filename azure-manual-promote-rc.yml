@@ -49,7 +49,7 @@ steps:
     enabled: false
     
   - script: |
-       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist 
+       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid "$(vid)" -vkey "$(vkey)" -action getapplist 
         #| tee appidlist.txt
     displayName: Pulling the Application List
     enabled: true
