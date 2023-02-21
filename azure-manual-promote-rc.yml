@@ -23,10 +23,6 @@ steps:
   - script: java --version
     continueOnError: true
     displayName: Report Java Version installed
-    
-  - script: ls -la $(Build.SourcesDirectory)
-  - script: ls -la $(Build.ArtifactStagingDirectory)
-  - script: ls -la $(Build.BinariesDirectory)
 
   - pwsh: |
       $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
@@ -57,7 +53,7 @@ steps:
  
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(VERACODE_API_ID) -vkey $(VERACODE_API_KEY) -action getapplist | tee appidlist.txt
-        $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
+      $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
       echo $veracodeappid
     displayName: Pulling the Sandbox ID List
     enabled: true
