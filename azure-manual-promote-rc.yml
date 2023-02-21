@@ -54,8 +54,8 @@ steps:
   #     java -jar VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
   #  displayName: Pulling the Sandbox ID List
   - script: |
-      $(Build.ArtifactStagingDirectory)/extract/java --version
-    #-jar VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar --version
+    # -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
     #    $veracodeappid = (Get-Content .\appidlist.txt | Select-String $appname).Line.Split('"')[1]
     #    Write-Output "Pulling the Sandbox ID List"
   
