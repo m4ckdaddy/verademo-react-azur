@@ -8,10 +8,8 @@ pr: none
 variables:
 - name: appName
   value: verademo-react-azure-devops
-- name: vid
-  value: testid
-- name: vkey
-  value: testkey
+- name: sandboxName
+  value: Release Candidate
 
 steps:
   - script: java --version
