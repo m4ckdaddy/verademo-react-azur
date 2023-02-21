@@ -54,7 +54,7 @@ steps:
     displayName: Show Contents
   
   - script: |
-      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o $(Build.ArtifactStagingDirectory) -y
+      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o $(Build.ArtifactStagingDirectory)/extract -y
     displayName: Uncompressiong File  
     enabled: true
     
