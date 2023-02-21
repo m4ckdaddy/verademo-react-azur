@@ -33,19 +33,15 @@ steps:
   - script: ls -la $(Build.ArtifactStagingDirectory)
     displayName: Show Artifact Directory Content
 
-  - script: | 
-      ls -la $(Build.ArtifactStagingDirectory)/extract
-    displayName: Uncompressiong File  
-    enabled: true
-  
-  - script: ls -la $(Build.ArtifactStagingDirectory)/extract/
+  - script: |
+      ls -la $(Build.ArtifactStagingDirectory)/extract/
     displayName: Show Extract Directory Content
     enabled: true
     
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -version
     displayName: Veracode Wrapper Version
-    enabled: true
+    enabled: false
     
   - script: |
        java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
