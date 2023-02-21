@@ -12,6 +12,7 @@ variables:
   value: testid
 - name: vkey
   value: testkey
+
 steps:
   - script: java --version
     continueOnError: true
@@ -44,12 +45,12 @@ steps:
     enabled: false
     
   - script: |
-       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
+       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(VERACODE_API_ID) -vkey $(VERACODE_API_KEY) -action getapplist | tee appidlist.txt
     displayName: Pulling the Sandbox ID List
     enabled: true
  
   - script: |
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(VERACODE_API_ID) -vkey $(VERACODE_API_KEY) -action getapplist | tee appidlist.txt
         $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
       echo $veracodeappid
     displayName: Pulling the Sandbox ID List
@@ -57,6 +58,6 @@ steps:
   
 
   #- script: |
-  #    java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
+  #    java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(VERACODE_API_ID) -vkey $(VERACODE_API_KEY) -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
   #        $veracodesandboxid = (Get-Content .\sandboxlist.txt | Select-String -Pattern "sandbox_id=").Line.Split('"')[9] | Select-Object -Last 1
   #        Write-Output "Pulling the Build ID List"
