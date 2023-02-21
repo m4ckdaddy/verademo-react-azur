@@ -39,10 +39,25 @@ steps:
  #     echo ${{ variables.one }} # outputs initialValue
  #     echo $(one) # outputs secondValue
  #   displayName: Second variable pass
+  - script: |
+      echo ##vso[task.setvariable variable=wrapper_version;isOutput=true]23.1.10.5
 
-  - script: | 
-      curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$version/vosp-api-wrappers-java-$(wrapper_version)-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
+  - script: |
+      Write-Output "Downloading the latest version of the Veracode Java API"
+          $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
+          $wrapper_version = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
+    displayName: Team
+    enabled: false
+    
+  - script: |
+      curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$WRAPPER_VERSION/vosp-api-wrappers-java-$WRAPPER_VERSION-dist.zip -o $(Build.ArtifactStagingDirectory)/dist.zip
     displayName: Downloading the latest version of the Veracode Java API
+    enabled: true     
+    
+  - script: |
+      7z e dist.zip -y
+    displayName: Uncompressiong File  
+    enabled: true
     
   - script: ls -la
     displayName: Show Contents
