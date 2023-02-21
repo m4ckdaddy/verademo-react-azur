@@ -41,7 +41,7 @@ steps:
           $versionstring = curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | Out-String -Stream | Select-String -Pattern 'latest';
           $wrapper_version = $versionstring -replace '\s','' -replace '<latest>','' -replace '</latest>','';
           ##vso[task.setvariable variable=wrapper_version;isOutput=true] $wrapper_version;
-    displayName: Team
+    displayName: Get meta-data on the latest version of the Veracode Java API
     enabled: true
     
   - script: |
@@ -54,7 +54,7 @@ steps:
     displayName: Show Contents
   
   - script: |
-      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o $(Build.ArtifactStagingDirectory)/extract -y
+      7z e $(Build.ArtifactStagingDirectory)/dist.zip -o$(Build.ArtifactStagingDirectory)/extract/ -y
     displayName: Uncompressiong File  
     enabled: true
     
