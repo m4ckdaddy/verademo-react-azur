@@ -5,11 +5,19 @@ name:  'Promote Release Candidate Scan'
 trigger: none
 pr: none
 
-variables:
-- name: appName
-  value: verademo-react-azure-devops
-- name: sandboxName
-  value: Release Candidate
+parameters:
+  - name: veracode-api-id
+    default: ""
+    type: string
+  - name: veracode-api-key
+    default: ""
+    type: string
+  - name: appName
+    default: "verademo-react-azure-devops"
+    type: string
+  - name: sandboxName
+    default: "Release Candidate"
+    type: string
 
 steps:
   - script: java --version
