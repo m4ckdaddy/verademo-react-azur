@@ -15,7 +15,7 @@ parameters:
     default: ""
     type: string
   - name: appName
-    default: "verademo-react-azure-devops"
+    default: "verademo-react"
     type: string
   - name: sandboxName
     default: "Release Candidate"
