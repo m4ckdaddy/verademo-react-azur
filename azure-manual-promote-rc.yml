@@ -69,17 +69,17 @@ steps:
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee appidlist.txt
       $veracodeappid = (Get-Content .\appidlist.txt | Select-String "${{parameters.appName}}").Line.Split('"')[1]
       echo $veracodeappid
-      java -jar VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
     
       $veracodesandboxid = (Get-Content .\sandboxlist.txt | Select-String -Pattern "sandbox_id=").Line.Split('"')[9] | Select-Object -Last 1
       echo $veracodesandboxid
 
-      java -jar VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getbuildlist -appid $veracodeappid -sandboxid $veracodesandboxid | tee getbuildlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getbuildlist -appid $veracodeappid -sandboxid $veracodesandboxid | tee getbuildlist.txt
      
       $veracodebuildid = (Get-Content .\getbuildlist.txt | Select-String -Pattern "build_id=").Line.Split('"')[1] | Select-Object -Last 1
       echo $veracodebuildid
-      java -jar VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $appname -sandboxid $veracodesandboxid
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $appname -sandboxid $veracodesandboxid
      
-      #java -jar VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $veracodebuildid 
+      #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $veracodebuildid 
     displayName: Test
     enabled: true
