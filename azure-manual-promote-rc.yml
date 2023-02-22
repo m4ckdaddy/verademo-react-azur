@@ -47,19 +47,15 @@ steps:
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -version
     displayName: Veracode Wrapper Version
     enabled: false
-    
+      
   - script: |
-      echo $(vid);
-      echo $(vkey);
-    
-  - script: |
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist 
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist 
         #| tee appidlist.txt
     displayName: Pulling the Application List
     enabled: true
  
   - script: |
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getapplist | tee appidlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee appidlist.txt
       $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
       echo $veracodeappid
     displayName: Pulling the Sandbox ID List
@@ -67,6 +63,6 @@ steps:
   
 
   #- script: |
-  #    java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid $(vid) -vkey $(vkey) -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
+  #    java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
   #        $veracodesandboxid = (Get-Content .\sandboxlist.txt | Select-String -Pattern "sandbox_id=").Line.Split('"')[9] | Select-Object -Last 1
   #        Write-Output "Pulling the Build ID List"
