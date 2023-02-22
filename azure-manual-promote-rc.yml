@@ -53,7 +53,7 @@ steps:
     displayName: Display the Application List
     enabled: true
  
-  - script: |
+  - pwsh: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee appidlist.txt
       $veracodeappid = (Get-Content .\appidlist.txt | Select-String ${{parameters.appName}}).Line.Split('"')[1]
       echo $veracodeappid
