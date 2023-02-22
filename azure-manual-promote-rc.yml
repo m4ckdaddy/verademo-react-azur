@@ -50,16 +50,15 @@ steps:
       
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist 
-        #| tee appidlist.txt
-    displayName: Pulling the Application List
+    displayName: Display the Application List
     enabled: true
  
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee appidlist.txt
-      $veracodeappid = (Get-Content .\appidlist.txt | Select-String $(appName)).Line.Split('"')[1]
+      $veracodeappid = (Get-Content .\appidlist.txt | Select-String ${{parameters.appName}}).Line.Split('"')[1]
       echo $veracodeappid
-    displayName: Pulling the Sandbox ID List
-    enabled: false
+    displayName: Pulling the Application List
+    enabled: true
   
 
   #- script: |
