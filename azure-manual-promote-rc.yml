@@ -78,7 +78,7 @@ steps:
      
       $veracodebuildid = (Get-Content .\getbuildlist.txt | Select-String -Pattern "build_id=").Line.Split('"')[1] | Select-Object -Last 1
       echo $veracodebuildid
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $appname -sandboxid $veracodesandboxid
+      #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $veracodebuildid 
     displayName: Test
