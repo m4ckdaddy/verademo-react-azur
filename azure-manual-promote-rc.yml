@@ -15,7 +15,7 @@ parameters:
     default: ""
     type: string
   - name: appName
-    default: "verademo-react"
+    default: "verademo-net-github-actions"
     type: string
   - name: sandboxName
     default: "Release Candidate"
@@ -52,40 +52,32 @@ steps:
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist 
     displayName: Display the Application List
     enabled: true
- 
-  - pwsh: |
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee appidlist.txt
-      $veracodeappid = (Get-Content .\appidlist.txt | Select-String "${{parameters.appName}}").Line.Split('"')[1]
-      echo $veracodeappid
-
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $veracodeappid | tee sandboxlist.txt
-          $veracodesandbox_name = (Get-Content .\sandboxlist.txt | Select-String "${{parameters.sandboxName}}").Line.Split('"')[1]
-          # $veracodesandboxid = (Get-Content .\sandboxlist.txt | Select-String -Pattern "sandbox_id=").Line.Split('"')[9] | Select-Object -Last 1
-      echo $veracodesandbox_name
-    displayName: "Pulling the Build ID List"
-    enabled: false
    
   - pwsh: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee applicationlist.xml
-      ls -la
-      $appName = "verademo-net-github-actions"
       [xml]$Xml = Get-Content .\applicationlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/applist"}
       # ${{parameters.appName}}
-      $ApplicationId = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:app[@app_name='${appName}']" | ForEach-Object {$_.Node.app_id}
-      Write-Host $ApplicationId
+      $appid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:app[@app_name='${appName}']" | ForEach-Object {$_.Node.app_id}
 
+      echo "##vso[task.setvariable variable=application_id]$appid"
+    displayName: Retrieving Application ID
+    
+  - pwsh: |
       # Get Application Sanbox List
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $ApplicationId | tee sandboxlist.xml
-      ls -la
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $(application_id) | tee sandboxlist.xml
+
       [xml]$Xml = Get-Content .\sandboxlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/sandboxlist"}
       # ${{parameters.sandboxName}}
-      $SandboxId = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
-
-      # Promote Scan
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $ApplicationId -sandboxid $SandboxId | tee buildlist.xml
-      ls -la
+      $sandboxid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
+  
+      echo "##vso[task.setvariable variable=sandbox_id]$sandboxid"
+    displayName: Retrieving Sandbox ID
+  
+  - pwsh: |
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $(application_id) -sandboxid $(sandbox_id) | tee buildlist.xml
+   
       [xml]$Xml = Get-Content .\buildlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/buildlist"}
       $Build = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build[last()]"
@@ -93,9 +85,12 @@ steps:
       $BuildId =  $Build.Node.build_id
       Write-Host $BuildId
       Write-Host $Build.Node.version
+      echo "##vso[task.setvariable variable=analysis_id]$BuildId"
+    displayName: Retrieving Build List
 
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $ApplicationId -sandboxid $SandboxId -buildid $BuildId | tee buildinfo.xml
-      ls -la
+  - pwsh: |
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $(application_id) -sandboxid $(sandbox_id) -buildid $(analysis_id) | tee buildinfo.xml
+   
       [xml]$Xml = Get-Content .\buildinfo.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/buildinfo"}
       $element = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build"
@@ -111,8 +106,10 @@ steps:
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $veracodebuildid 
-    displayName: Test
+    displayName: Evaluating Scan
     enabled: true
 
   - pwsh: |
       Write-Host 'Hello World: $(resultsReady)'
+    condition: eq($(resultsReady)], true)
+    displayName: Promoting Scan
