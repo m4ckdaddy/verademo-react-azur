@@ -84,9 +84,9 @@ steps:
       Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='Release Candidate']" | ForEach-Object {$_.Node.sandbox_id}
 
       # Promote Scan
-      # java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getbuildlist -appid $veracodeappid -sandboxid $veracodesandboxid | tee getbuildlist.txt
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getbuildlist -appid $veracodeappid -sandboxid $veracodesandboxid | tee getbuildlist.xml
      
-      # $veracodebuildid = (Get-Content .\getbuildlist.txt | Select-String -Pattern "build_id=").Line.Split('"')[1] | Select-Object -Last 1
+     
       # echo $veracodebuildid
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
