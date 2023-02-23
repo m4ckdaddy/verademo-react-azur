@@ -18,7 +18,7 @@ variables:
 - group: 'Veracode Credentials' # Reference the library containing Veracode Credentials
 
 jobs:
-   - template: jobs/veracode-sast-platform-release-candidate-promote-job@devops-scripts
+   - template: jobs/veracode-sast-platform-release-candidate-promote-job.yml@devops-scripts
      parameters:
         veracode-api-id: $(VERACODE_API_ID)
         veracode-api-key: $(VERACODE_API_KEY)
