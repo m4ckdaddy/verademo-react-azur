@@ -1,0 +1,25 @@
+name: Promote to Policy Level #$(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r) 
+
+trigger: none
+pr: none
+
+resources:
+  repositories:
+    - repository: devops-scripts
+      type: github
+      name: dmedeiros-veracode/devops-scripts-azure-devops
+      endpoint: dmedeiros-veracode #Connection name of GitHub App. Can be name of a Service Connection to GitHub as well.
+
+pool:
+  #vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
+
+variables:
+- group: 'Veracode Credentials' # Reference the library containing Veracode Credentials
+
+jobs:
+   - template: jobs/veracode-sast-platform-release-candidate-promote-job@devops-scripts
+     parameters:
+        veracode-api-id: $(VERACODE_API_ID)
+        veracode-api-key: $(VERACODE_API_KEY)
+        applicationName: 'verademo-react'
