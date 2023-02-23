@@ -22,9 +22,9 @@ parameters:
     type: string
 
 variables:
-  - name: application_id
-  - name: sandbox_id
-  - name: analysis_id
+  - name: ApplicationId
+  - name: SandboxId
+  - name: AnalysisId
 
 steps:
   - script: java --version
@@ -62,27 +62,26 @@ steps:
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee applicationlist.xml
       [xml]$Xml = Get-Content .\applicationlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/applist"}
-      # ${{parameters.appName}}
-      $appid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:app[@app_name='${appName}']" | ForEach-Object {$_.Node.app_id}
+      $appid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:app[@app_name='${{parameters.appName}}']" | ForEach-Object {$_.Node.app_id}
 
-      echo "##vso[task.setvariable variable=application_id]$appid"
+      echo "##vso[task.setvariable variable=ApplicationId]$appid"
     displayName: Retrieving Application ID
     
   - pwsh: |
-      echo "Application ID: $(application_id)"
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $(application_id) | tee sandboxlist.xml
+      echo "Application ID: $(ApplicationId)"
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $(ApplicationId) | tee sandboxlist.xml
 
       [xml]$Xml = Get-Content .\sandboxlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/sandboxlist"}
       # ${{parameters.sandboxName}}
-      $sandboxid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
+      $sandbox_id = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
   
-      echo "##vso[task.setvariable variable=sandbox_id]$sandboxid"
+      echo "##vso[task.setvariable variable=SandboxId]$sandbox_id"
     displayName: Retrieving Sandbox ID
   
   - pwsh: |
-      echo "Sandbox ID: $(sandbox_id)"
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $(application_id) -sandboxid $(sandbox_id) | tee buildlist.xml
+      echo "Sandbox ID: $(SandboxId)"
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $(ApplicationId) -sandboxid $(SandboxId) | tee buildlist.xml
    
       [xml]$Xml = Get-Content .\buildlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/buildlist"}
@@ -91,12 +90,12 @@ steps:
       $BuildId =  $Build.Node.build_id
       Write-Host $BuildId
       Write-Host $Build.Node.version
-      echo "##vso[task.setvariable variable=analysis_id]$BuildId"
+      echo "##vso[task.setvariable variable=AnalysisId]$BuildId"
     displayName: Retrieving Build List
 
   - pwsh: |
-      echo "Analysis ID: $(analysis_id)"
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $(application_id) -sandboxid $(sandbox_id) -buildid $(analysis_id) | tee buildinfo.xml
+      echo "Analysis ID: $(AnalysisId)"
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $(ApplicationId) -sandboxid $(SandboxId) -buildid $(AnalysisId) | tee buildinfo.xml
    
       [xml]$Xml = Get-Content .\buildinfo.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/buildinfo"}
