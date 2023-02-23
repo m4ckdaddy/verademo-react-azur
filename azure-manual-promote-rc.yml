@@ -90,14 +90,16 @@ steps:
       $Build = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build[last()]"
       $BuildId = $Build.Node.build_id
       $Version = $Build.Node.version
-      
+      echo $BuildId
+      echo #Version
+
       echo "##vso[task.setvariable variable=AnalysisName]$Version"
       echo "##vso[task.setvariable variable=AnalysisId]$BuildId"
-      Write-Hoste "Analysis ID: $(AnalysisId)"
+      Write-Host "Analysis ID: $(AnalysisId)"
     displayName: Retrieving Build List
 
   - pwsh: |
-      Write-Hoste "Analysis ID: $(AnalysisId)"
+      Write-Host "Analysis ID: $(AnalysisId)"
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $(ApplicationId) -sandboxid $(SandboxId) -buildid $(AnalysisId) | tee buildinfo.xml
    
       [xml]$Xml = Get-Content .\buildinfo.xml
