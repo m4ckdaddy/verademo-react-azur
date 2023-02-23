@@ -91,7 +91,7 @@ steps:
       $BuildId = $Build.Node.build_id
       $Version = $Build.Node.version
       echo $BuildId
-      echo #Version
+      echo $Version
 
       echo "##vso[task.setvariable variable=AnalysisName]$Version"
       echo "##vso[task.setvariable variable=AnalysisId]$BuildId"
