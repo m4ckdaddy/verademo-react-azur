@@ -100,12 +100,19 @@ steps:
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/buildinfo"}
       $element = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build"
       Write-Host $element.Node.results_ready
-     
+      $results_ready = $element.Node.results_ready
+      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
       # echo $veracodebuildid
+      
+      echo "##vso[task.setvariable variable=resultsReady]this is the same job"
+
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $veracodebuildid 
     displayName: Test
     enabled: true
+
+  - pwsh: |
+      Write-Host 'Hello World: $(resultsReady)'
