@@ -21,6 +21,11 @@ parameters:
     default: "Release Candidate"
     type: string
 
+variables:
+  - name: application_id
+  - name: sandbox_id
+  - name: analysis_id
+
 steps:
   - script: java --version
     continueOnError: true
@@ -51,7 +56,7 @@ steps:
   - script: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist 
     displayName: Display the Application List
-    enabled: true
+    enabled: false
    
   - pwsh: |
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getapplist | tee applicationlist.xml
@@ -64,7 +69,7 @@ steps:
     displayName: Retrieving Application ID
     
   - pwsh: |
-      # Get Application Sanbox List
+      echo "Application ID: $(application_id)"
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action getsandboxlist -appid $(application_id) | tee sandboxlist.xml
 
       [xml]$Xml = Get-Content .\sandboxlist.xml
@@ -76,6 +81,7 @@ steps:
     displayName: Retrieving Sandbox ID
   
   - pwsh: |
+      echo "Sandbox ID: $(sandbox_id)"
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $(application_id) -sandboxid $(sandbox_id) | tee buildlist.xml
    
       [xml]$Xml = Get-Content .\buildlist.xml
@@ -89,6 +95,7 @@ steps:
     displayName: Retrieving Build List
 
   - pwsh: |
+      echo "Analysis ID: $(analysis_id)"
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $(application_id) -sandboxid $(sandbox_id) -buildid $(analysis_id) | tee buildinfo.xml
    
       [xml]$Xml = Get-Content .\buildinfo.xml
