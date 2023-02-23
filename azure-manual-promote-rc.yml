@@ -111,5 +111,5 @@ steps:
 
   - pwsh: |
       Write-Host 'Hello World: $(resultsReady)'
-    condition: eq($(resultsReady)], true)
+    condition: eq(variables['resultsReady'],'true')
     displayName: Promoting Scan
