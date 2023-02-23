@@ -114,7 +114,7 @@ steps:
     enabled: true
 
   - pwsh: |
-      Write-Host 'Hello World: $(resultsReady)'
-      #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $(AnalysisId)
+      Write-Host "Promoting: $(AnalysisName) to Policy Level"
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action PromoteSandbox -buildid $(AnalysisId)
     condition: eq(variables['resultsReady'],'true')
     displayName: Promoting Scan
