@@ -106,7 +106,7 @@ steps:
      
       # echo $veracodebuildid
       
-      echo "##vso[task.setvariable variable=resultsReady]this is the same job"
+      echo "##vso[task.setvariable variable=resultsReady]$element.Node.results_ready"
 
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
