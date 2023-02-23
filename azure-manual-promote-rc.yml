@@ -86,7 +86,7 @@ steps:
       # Promote Scan
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $ApplicationId -sandboxid $SandboxId | tee Buildlist.xml
 
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $ApplicationId -sandboxid $SandboxId -buildid 24189914 | tee BuildInfo.xml
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $ApplicationId -sandboxid $SandboxId -buildid 24189914 | tee BuildInfo.xml
      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
