@@ -81,12 +81,23 @@ steps:
       [xml]$Xml = Get-Content .\sandboxlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/sandboxlist"}
       # ${{parameters.sandboxName}}
-      $SandboxId = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='Release Candidate']" | ForEach-Object {$_.Node.sandbox_id}
+      $SandboxId = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
 
       # Promote Scan
       java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildList -appid $ApplicationId -sandboxid $SandboxId | tee Buildlist.xml
+      [xml]$Xml = Get-Content .\buildlist.xml
+      $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/buildlist"}
+      $Build = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build[last()]"
 
-      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $ApplicationId -sandboxid $SandboxId -buildid 24189914 | tee BuildInfo.xml
+      $BuildId =  $Build.Node.build_id
+      Write-Host $BuildId
+      Write-Host $Build.Node.version
+
+      java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action GetBuildInfo -appid $ApplicationId -sandboxid $SandboxId -buildid $BuildId | tee BuildInfo.xml
+      [xml]$Xml = Get-Content .\buildinfo.xml
+      $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/4.0/buildinfo"}
+      $element = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:build"
+      Write-Host $element.Node.results_ready
      
       #java -jar $(Build.ArtifactStagingDirectory)/extract/VeracodeJavaAPI.jar -vid ${{parameters.vid}} -vkey ${{parameters.vkey}} -action passfail -appname $"${{parameters.appName}}" -sandboxid $veracodesandboxid
      
