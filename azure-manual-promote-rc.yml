@@ -59,9 +59,13 @@ steps:
       [xml]$Xml = Get-Content .\applicationlist.xml
       $SnippetNamespace = @{ns = "https://analysiscenter.veracode.com/schema/2.0/applist"}
       $appid = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:app[@app_name='${{parameters.appName}}']" | ForEach-Object {$_.Node.app_id}
-
-      ##vso[task.setvariable variable=ApplicationId]$appid
+      echo $appid
+      echo "##vso[task.setvariable variable=ApplicationId]$appid"
       echo "Application ID: $(ApplicationId)"
+      #If Blanck Report back that the application name cannot be found
+
+
+
     displayName: Retrieving Application ID
     
   - pwsh: |
@@ -73,7 +77,7 @@ steps:
       # ${{parameters.sandboxName}}
       $sandbox_id = Select-Xml -Xml $Xml -Namespace $SnippetNamespace -XPath "//ns:sandbox[@sandbox_name='${{parameters.sandboxName}}']" | ForEach-Object {$_.Node.sandbox_id}
   
-      ##vso[task.setvariable variable=SandboxId]$sandbox_id
+      echo "##vso[task.setvariable variable=SandboxId]$sandbox_id"
       Write-Host "Sandbox ID: $(SandboxId)"
     displayName: Retrieving Sandbox ID
   
@@ -87,8 +91,8 @@ steps:
       $BuildId = $Build.Node.build_id
       $Version = $Build.Node.version
       
-      ##vso[task.setvariable variable=AnalysisName]$Version
-      ##vso[task.setvariable variable=AnalysisId]$BuildId
+      echo "##vso[task.setvariable variable=AnalysisName]$Version"
+      echo "##vso[task.setvariable variable=AnalysisId]$BuildId"
       Write-Hoste "Analysis ID: $(AnalysisId)"
     displayName: Retrieving Build List
 
@@ -102,7 +106,7 @@ steps:
       Write-Host $element.Node.results_ready
       $results_ready = $element.Node.results_ready
     
-      ##vso[task.setvariable variable=resultsReady]$results_ready
+      echo "##vso[task.setvariable variable=resultsReady]$results_ready"
       Write-Host $(resultsReady)
     displayName: Evaluating Scan
     enabled: true
