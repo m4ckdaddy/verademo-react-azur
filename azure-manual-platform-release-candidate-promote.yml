@@ -20,6 +20,6 @@ variables:
 jobs:
    - template: jobs/veracode-sast-platform-release-candidate-promote-job.yml@devops-scripts
      parameters:
-        VeracodeApiId: $(VERACODE_API_ID)
-        VeracodeApiKey: $(VERACODE_API_KEY)
+        veracodeApiId: $(VERACODE_API_ID)
+        veracodeApiKey: $(VERACODE_API_KEY)
         applicationName: 'verademo-react'
